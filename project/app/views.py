@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import *
-from .models import *
+from .forms import RegistrationForm,LoginForm
+from .models import Registration,Login
 # Create your views here.
 
 def home(request):
@@ -30,23 +30,47 @@ def home(request):
     return render(request,"home.html",{"form":form})
 
 def login(request):
-    form=LoginForm()
     if request.method=="POST":
-        form=LoginForm(request.POST)
+        data=LoginForm(request.POST)
+        
+        email=data.cleaned_data["email"]
+        contact=data.cleaned_data["contact"]
+        print(email,contact)
+        user=Registration.objects.filter(email=email)
+        # if user:
+        #     user= Registration.objects.get(email=email)
+        #     print (user)
         
     
-    if form.is_valid():
-          email=form.cleaned_data["email"]
-          contact=form.cleaned_data["contact"]
-          print(email,contact)
-          user=Login.objects.filter(email=email)
-          if user:
-            msg = "Email already exit"
-            form = LoginForm()
-            return render(request,"login.html",{"form":form,"msg":msg})
-          else:
-            form.save()
-            msg="Registration succesfull"
-            form=LoginForm()
-            return render(request,"login.html",{"form":form,"msg":msg})
+    # if form.is_valid():
+    #       email=form.cleaned_data["email"]
+    #       contact=form.cleaned_data["contact"]
+    #       print(email,contact)
+    #       user=Login.objects.filter(email=email)
+    #       if user:
+    #         msg = "Email already exit"
+    #         form = LoginForm()
+    #         return render(request,"home.html",{"form":form,"msg":msg})
+    #       else:
+    #         form.save()
+    #         msg="Registration succesfull"
+    #         form=LoginForm()
+    #         return render(request,"home.html",{"form":form,"msg":msg})
+    
+    form=LoginForm()
     return render(request,'login.html',{'form':form})
+
+def login_data(request):
+     form=LoginForm()
+     if request.method=="POST":
+        data=LoginForm(request.POST)
+        
+        email=data.cleaned_data["email"]
+        contact=data.cleaned_data["contact"]
+        print(email,contact)
+        user=Registration.objects.filter(email=email)
+        if user:
+            user= Registration.objects.get(email=email)
+            print (user)
+        
+    
