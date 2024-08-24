@@ -13,4 +13,7 @@ class RegistrationForm(forms.ModelForm):
         model=Registration
         fields="__all__"
     
-    
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model=Login
+        fields=('email','contact')   

@@ -5,3 +5,7 @@ class Registration(models.Model):
     lname=models.CharField(max_length=50)
     email=models.EmailField()
     contact=models.IntegerField()
+    
+class Login(models.Model):
+    email=models.EmailField()
+    contact=models.IntegerField()
