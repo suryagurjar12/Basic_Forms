@@ -10,10 +10,10 @@ from .models import *
 
 class RegistrationForm(forms.ModelForm):
     class Meta:
-        model=Registration
+        model=StudentModel
         fields="__all__"
     
 class LoginForm(forms.ModelForm):
     class Meta:
-        model=Login
+        model=StudentModel
         fields=('email','contact')   

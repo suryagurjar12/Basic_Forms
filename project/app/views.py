@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import RegistrationForm,LoginForm
-from .models import Registration,Login
+from .models import StudentModel
 # Create your views here.
 
 def home(request):
@@ -13,64 +13,47 @@ def home(request):
             lname=form.cleaned_data["lname"]
             email=form.cleaned_data["email"]
             contact=form.cleaned_data["contact"]
-            print(fname,lname,email,contact)
-            user = Registration.objects.filter(email=email)
-            if user:
-                msg = "Email already exit"
-                form = RegistrationForm()
-                return render(request,"home.html",{"form":form,"msg":msg})
-            else:
-                form.save()
-                msg="Registration succesfull"
-                form=RegistrationForm()
-                return render(request,"home.html",{"form":form,"msg":msg})
-            # data={"fname":fname,"lname":lname,"email":email,"contact":contact}
-            # Registration.objects.create(fname=fname,lname=lname,email=email,contact=contact)
+            password =form.cleaned_data['password']
+            print(fname,lname,email,contact,password)
             form.save()
-    return render(request,"home.html",{"form":form})
+            msg="Registration Successfully"
+            return render(request,"home.html",{"form":form,'msg':msg})
+            
+    else:
+          
+           return render(request,"home.html",{"form":form})
 
 def login(request):
+    form = LoginForm()
     if request.method=="POST":
-        data=LoginForm(request.POST)
-        
-        email=data.cleaned_data["email"]
-        contact=data.cleaned_data["contact"]
-        print(email,contact)
-        user=Registration.objects.filter(email=email)
-        # if user:
-        #     user= Registration.objects.get(email=email)
-        #     print (user)
-        
-    
-    # if form.is_valid():
-    #       email=form.cleaned_data["email"]
-    #       contact=form.cleaned_data["contact"]
-    #       print(email,contact)
-    #       user=Login.objects.filter(email=email)
-    #       if user:
-    #         msg = "Email already exit"
-    #         form = LoginForm()
-    #         return render(request,"home.html",{"form":form,"msg":msg})
-    #       else:
-    #         form.save()
-    #         msg="Registration succesfull"
-    #         form=LoginForm()
-    #         return render(request,"home.html",{"form":form,"msg":msg})
-    
-    form=LoginForm()
-    return render(request,'login.html',{'form':form})
-
-def login_data(request):
-     form=LoginForm()
-     if request.method=="POST":
-        data=LoginForm(request.POST)
-        
-        email=data.cleaned_data["email"]
-        contact=data.cleaned_data["contact"]
-        print(email,contact)
-        user=Registration.objects.filter(email=email)
-        if user:
-            user= Registration.objects.get(email=email)
-            print (user)
-        
+        data = LoginForm(request.POST)
+        if data.is_valid():
+            email = data.cleaned_data['stu_email']
+            password = data.cleaned_data['stu_password']
+            # print(email,password)
+            user = StudentModel.objects.filter(stu_email=email)
+            
+            if user:
+                user = StudentModel.objects.get(stu_email=email)
+                # print(user.stu_password)
+                if user.stu_password==password:
+                    name = user.stu_name
+                    email = user.stu_email
+                    contact = user.stu_mobile
+                    city = user.stu_city
+                    data = {
+                        'name':name,
+                        'email':email,
+                        'contact':contact,
+                        'city':city
+                    }
+                    return render(request,'dashboard.html',{'data':data})
+                else:
+                    msg = "Email & Password not matched"
+                    return render(request,'login.html',{'form':form,'msg':msg})
+            else:
+                msg = "Email not register so please register first"
+                return render(request,'login.html',{'form':form,'msg':msg})
+    else:
+        return render(request,'login.html',{'form':form})
     
